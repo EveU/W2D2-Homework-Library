@@ -66,14 +66,44 @@ class Library
   end
 
   # Get user input
+  def check_for_person(input_name)
+    person_in_library = false
+    @people.each do |key, person| 
+      if person.name == input_name
+        person_in_library =true
+      end
+    end
+    person_in_library
+  end
+
+  def check_for_book(book_title)
+    book_in_library = false
+    @books.each do |key, book| 
+      if book.title == book_title
+        book_in_library =true
+      end
+    end
+    book_in_library
+  end
+
   def issue_books
     puts "Issue books? (y/n):"
     response = gets.chomp
     while response == "y"
       puts "Who is requesting to take out a book?"
       person_name = gets.chomp.capitalize
+      until check_for_person(person_name) == true
+        puts "No such person at this library. All people:\n\t#{list_people}"
+        puts "Please try again: "
+        person_name = gets.chomp.capitalize
+      end
       puts "What book would they like to take out?"
       book_title = gets.chomp
+      until check_for_book(book_title) == true
+        puts "No such book in this library. All books:\n\t#{list_books}"
+        puts "Please try again: "
+        book_title = gets.chomp
+      end
       lend_book(person_name, book_title)
       puts "Issue another book? (y/n):"
       response = gets.chomp
