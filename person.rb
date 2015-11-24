@@ -8,7 +8,7 @@ class Person
   end
 
   def pretty_string
-    "'#{@name}' has #{@books.size} books borrowed at the moment."
+    "'#{@name}' currently has #{@books.size} books on loan."
   end
 
   def borrow(book)
@@ -20,8 +20,7 @@ class Person
   end
 
   def borrowed_books
-     books_on_loan = @books.map { |key, book| book.title }
-     books_on_loan
+     @books.map { |key, book| book.title }
   end
 
   def borrowed_books_string

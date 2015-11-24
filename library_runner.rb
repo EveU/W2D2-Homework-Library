@@ -51,6 +51,14 @@ puts "\n"
 # TODO: list borrowed books
 puts "#{library.list_borrowed_books}\n"
 
+
+# Get user input
 library.issue_books
+library.return_books
+
+puts "All books: #{library.list_books}"
+puts "\n"
+
+puts "#{library.list_borrowed_books}\n"
 
 binding.pry;""

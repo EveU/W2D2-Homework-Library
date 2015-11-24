@@ -43,7 +43,7 @@ class Library
   def lend_book(person_name, book_title)
     person = @people[person_name]
     book = @books[book_title]
-    if book.available?
+    if book != nil && book.available?
       @books[book_title] = book.borrow_book(@books[book_title])
       person.borrow(book)
       puts "#{book_title} has been loaned to #{person_name}\n"
@@ -56,7 +56,12 @@ class Library
   def return_book(person_name, book_title)
     person = @people[person_name]
     book = person.return(book_title)
-    @books[book_title] = book.return_book(@books[book_title])
+    if book == nil
+      puts "#{person_name} does not have #{book_title}"
+    else
+      @books[book_title] = book.return_book(@books[book_title])
+    end
+    puts "#{book_title} has been returned to the library."
   end 
 
 # TODO: list borrowed books
@@ -69,9 +74,7 @@ class Library
   def check_for_person(input_name)
     person_in_library = false
     @people.each do |key, person| 
-      if person.name == input_name
-        person_in_library =true
-      end
+      person_in_library = true if person.name == input_name
     end
     person_in_library
   end
@@ -79,48 +82,48 @@ class Library
   def check_for_book(book_title)
     book_in_library = false
     @books.each do |key, book| 
-      if book.title == book_title
-        book_in_library =true
-      end
+      book_in_library = true if book.title == book_title
     end
     book_in_library
   end
 
   def issue_books
     puts "Issue books? (y/n):"
-    response = gets.chomp
+    response = gets.chomp.downcase
     while response == "y"
       puts "Who is requesting to take out a book?"
       person_name = gets.chomp.capitalize
-      until check_for_person(person_name) == true
+      if check_for_person(person_name) == false
         puts "No such person at this library. All people:\n\t#{list_people}"
-        puts "Please try again: "
-        person_name = gets.chomp.capitalize
-      end
-      puts "What book would they like to take out?"
-      book_title = gets.chomp
-      until check_for_book(book_title) == true
-        puts "No such book in this library. All books:\n\t#{list_books}"
-        puts "Please try again: "
+      else
+        puts "What book would they like to take out?"
         book_title = gets.chomp
+        if check_for_book(book_title) == false
+          puts "No such book in this library. All books:\n\t#{list_books}"
+        else
+          lend_book(person_name, book_title)
+        end
       end
-      lend_book(person_name, book_title)
       puts "Issue another book? (y/n):"
-      response = gets.chomp
+      response = gets.chomp.downcase
     end
   end
 
   def return_books
     puts "Return books? (y/n):"
-    response = gets.chomp
+    response = gets.chomp.downcase
     while response == "y"
       puts "Who is returning a book?"
       person_name = gets.chomp.capitalize
-      puts "What book are they returning?"
-      book_title = gets.chomp
-      return_book(person_name, book_title)
-      puts "Issue another book? (y/n):"
-      response = gets.chomp
+      if check_for_person(person_name) == false
+        puts "No such person at this library. All people:\n\t#{list_people}"
+      else
+        puts "What book are they returning?"
+        book_title = gets.chomp
+        return_book(person_name, book_title)
+      end
+      puts "Return another book? (y/n):"
+      response = gets.chomp.downcase
     end
   end
 
